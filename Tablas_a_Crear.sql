@@ -49,7 +49,7 @@ create table CLIENTE(
 /*TABLA PROVEEDOR*/
 create table PROVEEDOR(
 	IDProv integer PRIMARY KEY NOT NULL,
-	nombre varchar(50) NOT null,
+	proveedor varchar(50) NOT null,
 	direccion varchar (60) NOT null,
 	telefono varchar(10) NOT null,
 	correoElectr varchar (50) NOT null
