@@ -1,29 +1,43 @@
 # PostgreSQL-AlquilerVehicular 
-
-/*TABLA TRABAJADORES*/
-create table TRABAJADORES(
-	IDTrabajador varchar(20) PRIMARY KEY NOT NULL,
-	apellidosNombres varchar(65) NOT null,
+create DATABASE alquilerVehicular;
+/*TABLA TRABAJADOR*/
+create table TRABAJADOR(
+	IDTrabajador integer PRIMARY KEY NOT NULL,
+	apellidos varchar(25) NOT null,
+	Nombres varchar(25) NOT null,
 	CI numeric NOT null,
+	fechNacimiento date,
 	telefono varchar(10) NOT null,
-	correoElectr varchar (90) NOT null
+	correoElectr varchar (90) NOT null,
+	fechaIngreso date
 );
 
 /*TABLA DEPARTAMENTO*/
 create table DEPARTAMENTO(
-	CodDep varchar(7) PRIMARY KEY NOT NULL,
-	IDTrabajadorEncargpk varchar(20) NOT null,
+	CodDep integer PRIMARY KEY NOT NULL,
 	nombreArea varchar (40) NOT null,
-	NumTrabajadores integer NOT null,
+	NumTrabajadores integer NOT null
+);
+
+/*TABLA REGISTRO ENCARGADO DEPARTAMENTO*/
+create table REGISTROENCARGADODEPART(
+	IDRegEncDepr integer PRIMARY KEY NOT NULL,
+	CodDeppk integer NOT NULL,
+	IDTrabajadorEncargpk integer NOT null,
+	inicioCargo date NOT null,
+	CONSTRAINT CodDeppkfkey FOREIGN KEY (CodDeppk)
+   	REFERENCES DEPARTAMENTO(CodDep) MATCH SIMPLE
+   	ON UPDATE CASCADE ON DELETE CASCADE,
+	
 	CONSTRAINT IDTrabajadorEncargpkfkey FOREIGN KEY (IDTrabajadorEncargpk)
-   	REFERENCES TRABAJADORES(IDTrabajador) MATCH SIMPLE
+   	REFERENCES TRABAJADOR(IDTrabajador) MATCH SIMPLE
    	ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 /*TABLA CLIENTE*/
 create table CLIENTE(
 	IDCliente integer PRIMARY KEY NOT NULL,
-	nombreApellido varchar(70) NOT null,
+	cliente varchar(70) NOT null,
 	telefono integer,
 	correoElectronico varchar(90),
 	direccion varchar (50),
@@ -34,7 +48,7 @@ create table CLIENTE(
 
 /*TABLA PROVEEDOR*/
 create table PROVEEDOR(
-	IDProv varchar (6) PRIMARY KEY NOT NULL,
+	IDProv integer PRIMARY KEY NOT NULL,
 	nombre varchar(50) NOT null,
 	direccion varchar (60) NOT null,
 	telefono varchar(10) NOT null,
@@ -43,15 +57,15 @@ create table PROVEEDOR(
 
 /*TABLA MARCA VEHICULAR*/
 create table MARCAVEHICULAR(
-	IDMarca varchar (5) PRIMARY KEY NOT NULL,
+	IDMarca integer PRIMARY KEY NOT NULL,
 	nombreMarca varchar(40) NOT null
 );
 
 /*TABLA VEHICULO*/
 create table VEHICULO(
-	CodiVehic varchar (6) PRIMARY KEY NOT NULL,
-	IDProvpk varchar(6) NOT null,
-	IDMarcapk varchar(5)NOT null,
+	CodiVehic integer PRIMARY KEY NOT NULL,
+	IDProvpk integer NOT null,
+	IDMarcapk integer NOT null,
 	tipoVehiculo varchar (15)NOT null,
 	placa varchar (15)NOT null,
 	numMatricula varchar (25) NOT null,
@@ -62,18 +76,18 @@ create table VEHICULO(
 	precioAlquiler double precision NOT null,
 	descripcion varchar (100) NOT null,
 	CONSTRAINT IDProvpkfkey FOREIGN KEY (IDProvpk)
-  	  REFERENCES PROVEEDOR(IDProv) MATCH SIMPLE
-  	  ON UPDATE CASCADE ON DELETE CASCADE,
-	 CONSTRAINT IDMarcapkfkey FOREIGN KEY (IDMarcapk)
-    	 REFERENCES MARCAVEHICULAR(IDMarca) MATCH SIMPLE
-    	 ON UPDATE CASCADE ON DELETE CASCADE
+  	REFERENCES PROVEEDOR(IDProv) MATCH SIMPLE
+  	ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT IDMarcapkfkey FOREIGN KEY (IDMarcapk)
+    	REFERENCES MARCAVEHICULAR(IDMarca) MATCH SIMPLE
+    	ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 /*TABLA RESERVA*/
 create table RESERVA(
-	CodiReserva varchar (5) PRIMARY KEY NOT NULL,
+	CodiReserva integer PRIMARY KEY NOT NULL,
 	IDClientepk integer NOT null,
-	CodiVehicpk varchar(6)NOT null,
+	CodiVehicpk integer NOT null,
 	tipoLicencia varchar (4)NOT null,
 	fechaHoraRetiro timestamp NOT null,
 	fechaHoraEntrega timestamp NOT null,
@@ -91,10 +105,9 @@ create table RESERVA(
 create table REGISTROREVISION(
 	CodRevs integer PRIMARY KEY NOT NULL,
 	IDClientepk integer NOT null,
-	CodiVehicpk varchar(6)NOT null,
-	IDTrabajadorResponsablepk varchar(20)NOT null,
-	CodiReservapk varchar(5)NOT null,
-	CodDeppk varchar (7) NOT NULL,
+	CodiVehicpk integer NOT null,
+	IDTrabajadorResponsablepk integer NOT null,
+	CodiReservapk integer NOT null,
 	valorizacionAlCliente smallint NOT null,
 	observacion varchar (150),
 	
@@ -106,25 +119,23 @@ create table REGISTROREVISION(
     	 REFERENCES VEHICULO(CodiVehic) MATCH SIMPLE
     	 ON UPDATE CASCADE ON DELETE CASCADE,
 	
-	CONSTRAINT IDTrabajadorResponsablepkfkey FOREIGN KEY (IDTrabajadorResponsablepk)
-  	  REFERENCES TRABAJADORES(IDTrabajador) MATCH SIMPLE
+	CONSTRAINT IDTrabajadorRespon_sablepkfkey FOREIGN KEY (IDTrabajadorResponsablepk)
+  	  REFERENCES TRABAJADOR(IDTrabajador) MATCH SIMPLE
   	  ON UPDATE CASCADE ON DELETE CASCADE,
 	
 	CONSTRAINT CodiReservapkfkey FOREIGN KEY (CodiReservapk)
   	  REFERENCES RESERVA(CodiReserva) MATCH SIMPLE
-  	  ON UPDATE CASCADE ON DELETE CASCADE,
-	
-	CONSTRAINT CodDeppkfkey FOREIGN KEY (CodDeppk)
-  	  REFERENCES DEPARTAMENTO(CodDep) MATCH SIMPLE
   	  ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 /*CONSULTAS DE TABLAS CREADAS*/
-select * from TRABAJADORES;
+select * from TRABAJADOR;
 select * from DEPARTAMENTO;
+select * from REGISTROENCARGADODEPART;
 select * from CLIENTE;
 select * from PROVEEDOR;
 select * from MARCAVEHICULAR;
 select * from VEHICULO;
 select * from RESERVA;
 select * from REGISTROREVISION;
+
